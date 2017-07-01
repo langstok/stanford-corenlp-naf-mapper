@@ -3,18 +3,20 @@ package com.langstok.nlp.corenlptonaf.map;
 import com.langstok.nlp.corenlptonaf.constant.KAFConstants;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
-import edu.stanford.nlp.coref.data.Mention;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 import ixa.kaflib.KAFDocument;
+import ixa.kaflib.Span;
+import ixa.kaflib.Term;
 import ixa.kaflib.WF;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.langstok.nlp.corenlptonaf.constant.NLPConstants.PARAGRAPH;
 
@@ -38,6 +40,7 @@ public final class CoreNLPtoKAF {
     public static KAFDocument convert(Annotation doc, KAFDocument kafDocument) {
         setTOKToKAF(doc, kafDocument);
         setPOSToKAF(doc, kafDocument);
+        setCorefToKAF(doc, kafDocument);
         return kafDocument;
     }
 
@@ -72,9 +75,11 @@ public final class CoreNLPtoKAF {
                 }
             }
         }
-        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(KAFConstants.LAYER_TEXT, getVersion(KAFConstants.LP_TOK));
+        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
+                KAFConstants.LAYER_TEXT, getModelName(KAFConstants.LP_TOK));
         newLp.setBeginTimestamp();
         newLp.setEndTimestamp();
+        newLp.setVersion(getCoreNLPVersion());
         return kaf;
     }
 
@@ -103,10 +108,12 @@ public final class CoreNLPtoKAF {
                 }
             }
         }
-        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(KAFConstants.LAYER_TERMS, getVersion(KAFConstants.LP_POS));
+        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
+                KAFConstants.LAYER_TERMS, getModelName(KAFConstants.LP_POS));
         newLp.setBeginTimestamp();
         newLp.setEndTimestamp();
-       return kaf;
+        newLp.setVersion(getCoreNLPVersion());
+        return kaf;
     }
 
     private static String setTermType(String postag) {
@@ -144,32 +151,34 @@ public final class CoreNLPtoKAF {
     }
 
 
+    private static KAFDocument setCorefToKAF(Annotation doc, KAFDocument kaf) {
+        if (doc.get(CorefCoreAnnotations.CorefChainAnnotation.class) != null) {
 
-
-
-    public KAFDocument corefToKaf(Annotation document, KAFDocument kafDocument){
-        logger.info("---");
-        logger.info("coref chains");
-        if(document.get(CorefCoreAnnotations.CorefChainAnnotation.class)==null){
-            logger.debug("no coref");
-            return kafDocument;
-        }
-
-        for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
-            logger.info("\t" + cc);
-        }
-        for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
-            logger.info("---");
-            logger.info("mentions");
-            for (Mention m : sentence.get(CorefCoreAnnotations.CorefMentionsAnnotation.class)) {
-                logger.info("\t" + m);
+            Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
+            for (CorefChain chain : corefChains.values()) {
+                List<Span<Term>> corefList = new ArrayList<>();
+                chain.getMentionsInTextualOrder().forEach(mention -> {
+                   Span<Term> termSpan = KAFDocument.newTermSpan();
+                   for(int termIndex = mention.startIndex-1; termIndex <mention.endIndex-1; termIndex++)
+                       termSpan.addTarget(kaf.getSentenceTerms(mention.sentNum-1).get(termIndex));
+                   corefList.add(termSpan);
+                });
+                kaf.newCoref(corefList);
             }
         }
-        return kafDocument;
+        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
+                KAFConstants.LAYER_COREFENCES, getModelName(KAFConstants.LP_DCOREF));
+        newLp.setBeginTimestamp();
+        newLp.setEndTimestamp();
+        newLp.setVersion(getCoreNLPVersion());
+        return kaf;
     }
 
+    private static String getModelName(String lp){
+        return "langstok-corenlp-"+lp;
+    }
 
-    private static String getVersion(String lp){
-        return "langstok-"+lp+"-corenlp-"+CoreMap.class.getPackage().getImplementationVersion();
+    private static String getCoreNLPVersion(){
+        return CoreMap.class.getPackage().getImplementationVersion();
     }
 }

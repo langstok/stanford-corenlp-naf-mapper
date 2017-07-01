@@ -21,8 +21,8 @@ public class KAFConstants {
     public static final String LAYER_TIME_EXPRESSIONS = "timeExpressions";
 
     public static final String LP_POS = "pos";
-    public static final String LP_TOK = "tok";
-
+    public static final String LP_TOK = "tokenize";
+    public static final String LP_DCOREF = "dcoref";
 
 
 
