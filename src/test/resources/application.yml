@@ -1,0 +1,5 @@
+server.port: 0
+logging:
+    file: testlogging.log
+    level:
+      com.langstok.nlp.coref.stanford: info
