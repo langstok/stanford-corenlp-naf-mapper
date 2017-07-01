@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 public class SerializedToKAFDocument {
 
     private final static Logger logger = Logger.getLogger(SerializedToKAFDocument.class);
-    
+
     private KAFDocument result;
     private Annotation doc;
 
@@ -32,11 +32,7 @@ public class SerializedToKAFDocument {
         KAFDocument kafDocument = new KAFDocument("en","0.0");
         result = CoreNLPtoKAF.convert(doc, kafDocument);
     }
-
-    /**
-     * Load serialized document
-     * @throws FileNotFoundException
-     */
+    
     @Before
     public void loadDocument() throws URISyntaxException, IOException, ClassNotFoundException {
         GenericAnnotationSerializer genericAnnotationSerializer = new GenericAnnotationSerializer();
