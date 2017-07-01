@@ -23,9 +23,7 @@ import java.nio.file.Paths;
 public class SerializedToKAFDocument {
 
     private final static Logger logger = Logger.getLogger(SerializedToKAFDocument.class);
-
-    private KAFDocument kafDocument;
-
+    
     private KAFDocument result;
     private Annotation doc;
 
