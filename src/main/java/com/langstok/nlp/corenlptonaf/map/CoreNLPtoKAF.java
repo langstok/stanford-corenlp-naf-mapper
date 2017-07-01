@@ -22,7 +22,7 @@ import static com.langstok.nlp.corenlptonaf.constant.NLPConstants.PARAGRAPH;
 
 
 /**
- * Parts copied from @https://github.com/ragerri
+ * Parts copied from @https://github.com/ragerri (TOK, POS)
  */
 public final class CoreNLPtoKAF {
 

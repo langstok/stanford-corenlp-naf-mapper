@@ -32,7 +32,7 @@ public class SerializedToKAFDocument {
         KAFDocument kafDocument = new KAFDocument("en","0.0");
         result = CoreNLPtoKAF.convert(doc, kafDocument);
     }
-    
+
     @Before
     public void loadDocument() throws URISyntaxException, IOException, ClassNotFoundException {
         GenericAnnotationSerializer genericAnnotationSerializer = new GenericAnnotationSerializer();
