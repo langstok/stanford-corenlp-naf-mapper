@@ -12,9 +12,9 @@ import java.util.*;
 import java.util.logging.Logger;
 
 
-public class MapKAFtoCoreNLPTests {
+public class GetCoreNLPAnnotationFromKAFTests {
 
-    private static final Logger logger = Logger.getLogger(MapKAFtoCoreNLPTests.class.getName());
+    private static final Logger logger = Logger.getLogger(GetCoreNLPAnnotationFromKAFTests.class.getName());
 
     private KAFDocument kafDocument;
     private KAFDocument result;
