@@ -49,13 +49,12 @@ public final class KAFtoCoreNLP {
 
 
     public static Annotation getAnnotation(KAFDocument kafDocument){
-
-
-        StringBuilder builder = new StringBuilder();
-
         Annotation document = new Annotation(kafDocument.getRawText());
 
-        document.set(CoreAnnotations.TokensAnnotation.class, getCorelabels(kafDocument));
+        //StringBuilder builder = new StringBuilder();
+
+
+        //document.set(CoreAnnotations.TokensAnnotation.class, getCorelabels(kafDocument));
 
 
         // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types

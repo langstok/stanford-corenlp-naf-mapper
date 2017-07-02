@@ -37,7 +37,7 @@ public class MapAnnotationToKAFTests {
     public void loadDocument() throws URISyntaxException, IOException, ClassNotFoundException {
         GenericAnnotationSerializer genericAnnotationSerializer = new GenericAnnotationSerializer();
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("standford-out-preann-result.ser.gz").getFile());
+        File file = new File(classLoader.getResource("wikinews_1173_en-corenlp-annotated.ser.gz").getFile());
         FileInputStream fileStream = new FileInputStream(file);
         Pair<Annotation, InputStream> out = genericAnnotationSerializer.read(fileStream);
         doc = out.first;
