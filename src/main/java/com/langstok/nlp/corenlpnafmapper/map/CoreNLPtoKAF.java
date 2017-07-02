@@ -11,12 +11,12 @@ import ixa.kaflib.KAFDocument;
 import ixa.kaflib.Span;
 import ixa.kaflib.Term;
 import ixa.kaflib.WF;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
 
@@ -26,7 +26,7 @@ import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
  */
 public final class CoreNLPtoKAF {
 
-    private static final Logger logger = Logger.getLogger(CoreNLPtoKAF.class);
+    private static final Logger logger = Logger.getLogger(CoreNLPtoKAF.class.getName());
 
     /**
      * sentiment?: tokenize,ssplit,pos,lemma,ner,parse,depparse,mention,dcoref,sentiment???
@@ -37,7 +37,7 @@ public final class CoreNLPtoKAF {
      * @param kafDocument
      * @return
      */
-    public static KAFDocument convert(Annotation doc, KAFDocument kafDocument) {
+    public static KAFDocument map(Annotation doc, KAFDocument kafDocument) {
         setTOKToKAF(doc, kafDocument);
         setPOSToKAF(doc, kafDocument);
         setCorefToKAF(doc, kafDocument);
