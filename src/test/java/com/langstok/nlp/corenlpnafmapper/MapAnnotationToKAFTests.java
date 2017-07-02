@@ -30,7 +30,7 @@ public class MapAnnotationToKAFTests {
     @Test
     public void annotatedCorefToKaf() throws Exception {
         KAFDocument kafDocument = new KAFDocument("en","0.0");
-        result = CoreNLPtoKAF.map(doc, kafDocument);
+        result = CoreNLPtoKAF.mapAllAnnotations(doc, kafDocument);
     }
 
     @Before

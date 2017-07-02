@@ -7,15 +7,9 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
-import ixa.kaflib.KAFDocument;
-import ixa.kaflib.Span;
-import ixa.kaflib.Term;
-import ixa.kaflib.WF;
+import ixa.kaflib.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
@@ -37,17 +31,18 @@ public final class CoreNLPtoKAF {
      * @param kafDocument
      * @return
      */
-    public static KAFDocument map(Annotation doc, KAFDocument kafDocument) {
-        setTOKToKAF(doc, kafDocument);
-        setPOSToKAF(doc, kafDocument);
-        setCorefToKAF(doc, kafDocument);
+    public static KAFDocument mapAllAnnotations(Annotation doc, KAFDocument kafDocument) {
+        mapTOKToKAF(doc, kafDocument);
+        mapPOSToKAF(doc, kafDocument);
+        mapNerToKAF(doc, kafDocument);
+        mapCorefToKAF(doc, kafDocument);
         return kafDocument;
     }
 
 
 
 
-    public static KAFDocument setTOKToKAF(Annotation doc, final KAFDocument kaf){
+    public static KAFDocument mapTOKToKAF(Annotation doc, final KAFDocument kaf){
 
         int noSents = 0;
         int noParas = 1;
@@ -84,10 +79,9 @@ public final class CoreNLPtoKAF {
     }
 
 
-    public static KAFDocument setPOSToKAF(Annotation doc, KAFDocument kaf){
+    public static KAFDocument mapPOSToKAF(Annotation doc, KAFDocument kaf){
 
         List<List<WF>> sentences = kaf.getSentences();
-
         if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
 
             Iterator<CoreMap> itr = doc.get(CoreAnnotations.SentencesAnnotation.class).iterator();
@@ -97,14 +91,20 @@ public final class CoreNLPtoKAF {
                 List<CoreLabel> docTokens = docSentence.get(CoreAnnotations.TokensAnnotation.class);
 
                 for (int i = 0; i < docTokens.size(); i++) {
-                    List<WF> wfs = new ArrayList<WF>();
+                    Span<WF> wfSpan = KAFDocument.newWFSpan();
+                    wfSpan.addTarget(sentence.get(i));
+
                     CoreLabel coreLabel = docTokens.get(i);
-                    wfs.add(sentence.get(i));
                     String posTag = coreLabel.tag();
                     String posId = mapEnglishTagSetToKaf(posTag);
                     String type = setTermType(posId); // type
                     String lemma = coreLabel.lemma();
-                    kaf.createTermOptions(type, lemma, posId, posTag, wfs);
+
+                    Term term = kaf.newTerm(wfSpan);
+                    term.setType(type);
+                    term.setLemma(lemma);
+                    term.setPos(posId);
+                    term.setMorphofeat(posTag);
                 }
             }
         }
@@ -150,8 +150,42 @@ public final class CoreNLPtoKAF {
         }
     }
 
+    private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf) {
 
-    private static KAFDocument setCorefToKAF(Annotation doc, KAFDocument kaf) {
+        if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
+
+            doc.get(CoreAnnotations.SentencesAnnotation.class).forEach(sentence -> {
+                if (sentence.get(CoreAnnotations.MentionsAnnotation.class) != null) {
+                    sentence.get(CoreAnnotations.MentionsAnnotation.class).stream().forEach((CoreMap mention) -> {
+
+                        String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+                        int begin = mention.get(CoreAnnotations.TokenBeginAnnotation.class);
+                        int end = mention.get(CoreAnnotations.TokenEndAnnotation.class);
+
+                        List<String> wfIds = new ArrayList<>();
+                        for(int wfIndex=begin; wfIndex<end; wfIndex++){
+                            wfIds.add(kaf.getWFs().get(wfIndex).getId());
+                        }
+
+                        List<Term> nameTerms = kaf.getTermsFromWFs(wfIds);
+                        Span<Term> neSpan = KAFDocument.newTermSpan(nameTerms);
+                        List<Span<Term>> references = new ArrayList<Span<Term>>();
+                        references.add(neSpan);
+                        Entity neEntity = kaf.newEntity(references);
+                        neEntity.setType(namedEntityTag);
+                    });
+                }
+            });
+        }
+        KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
+                KAFConstants.LAYER_ENITITIES, getModelName(KAFConstants.LP_NER));
+        newLp.setBeginTimestamp();
+        newLp.setEndTimestamp();
+        newLp.setVersion(getCoreNLPVersion());
+        return kaf;
+    }
+
+        private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf) {
         if (doc.get(CorefCoreAnnotations.CorefChainAnnotation.class) != null) {
 
             Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
@@ -172,6 +206,19 @@ public final class CoreNLPtoKAF {
         newLp.setEndTimestamp();
         newLp.setVersion(getCoreNLPVersion());
         return kaf;
+    }
+
+
+    public List<String> getAllWFIdsFromTerms(KAFDocument kaf) {
+        List<Term> terms = kaf.getTerms();
+        List<String> wfTermIds = new ArrayList<>();
+        for (int i = 0; i < terms.size(); i++) {
+            List<WF> sentTerms = terms.get(i).getWFs();
+            for (WF form : sentTerms) {
+                wfTermIds.add(form.getId());
+            }
+        }
+        return wfTermIds;
     }
 
     private static String getModelName(String lp){
