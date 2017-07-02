@@ -245,12 +245,12 @@ public final class KAFtoCoreNLP {
     }
 
     public Annotation tokenSentencePos(KAFDocument kafDocument, Annotation annotation){
-        kafDocument.getTerms().forEach(term -> {
-//                stringBuilder
-//                        .append(term.getStr().replaceAll(" ",""))
-//                        .append(delimiter).append(term.getLemma())
-//                        .append(delimiter).append(term.getMorphofeat()).append(" ");
-        });
+//        kafDocument.getTerms().forEach(term -> {
+////                stringBuilder
+////                        .append(term.getStr().replaceAll(" ",""))
+////                        .append(delimiter).append(term.getLemma())
+////                        .append(delimiter).append(term.getMorphofeat()).append(" ");
+//        });
         return annotation;
     }
 

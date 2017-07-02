@@ -5,21 +5,24 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.GenericAnnotationSerializer;
 import edu.stanford.nlp.util.Pair;
 import ixa.kaflib.KAFDocument;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 /**
  * Created by sander.puts on 6/29/2017.
  */
-public class SerializedToKAFDocument {
+public class MapAnnotationToKAFTests {
 
-    private final static Logger logger = Logger.getLogger(SerializedToKAFDocument.class);
+    private final static Logger logger = Logger.getLogger(MapAnnotationToKAFTests.class.getName());
 
     private KAFDocument result;
     private Annotation doc;
