@@ -208,19 +208,7 @@ public final class CoreNLPtoKAF {
         return kaf;
     }
 
-
-    public List<String> getAllWFIdsFromTerms(KAFDocument kaf) {
-        List<Term> terms = kaf.getTerms();
-        List<String> wfTermIds = new ArrayList<>();
-        for (int i = 0; i < terms.size(); i++) {
-            List<WF> sentTerms = terms.get(i).getWFs();
-            for (WF form : sentTerms) {
-                wfTermIds.add(form.getId());
-            }
-        }
-        return wfTermIds;
-    }
-
+    
     private static String getModelName(String lp){
         return "langstok-corenlp-"+lp;
     }
