@@ -5,11 +5,19 @@ import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.IntPair;
 import ixa.kaflib.*;
+import ixa.kaflib.Span;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
@@ -35,6 +43,7 @@ public final class CoreNLPtoKAF {
         mapTOKToKAF(doc, kafDocument);
         mapPOSToKAF(doc, kafDocument);
         mapNerToKAF(doc, kafDocument);
+        //mapSentimentToKAF(doc, kafDocument); not compatible (sentence and token level tagging vs, expressions, targets, holders)
         mapCorefToKAF(doc, kafDocument);
         return kafDocument;
     }
@@ -185,17 +194,60 @@ public final class CoreNLPtoKAF {
         return kaf;
     }
 
-        private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf) {
+    private static KAFDocument mapSentimentToKAF(Annotation doc, KAFDocument kaf) {
+        if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
+
+            Iterator<CoreMap> itr = doc.get(CoreAnnotations.SentencesAnnotation.class).iterator();
+            while (itr.hasNext()) {
+                CoreMap sentence = itr.next();
+
+                edu.stanford.nlp.trees.Tree sentimentTree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+                if (sentimentTree != null) {
+                    int sentiment = RNNCoreAnnotations.getPredictedClass(sentimentTree);
+
+                    String sentimentClass = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
+                    String sentimentValue = Integer.toString(sentiment);
+                    sentimentClass = sentimentClass.replaceAll(" ", "");
+
+                    IntPair span = sentimentTree.getSpan();
+
+//                    List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
+//                    for (CoreLabel token : tokens) {
+//                        if (token.containsKey(SentimentCoreAnnotations.SentimentClass.class)) {
+//                            String tokenSentiment = token.get(SentimentCoreAnnotations.SentimentClass.class);
+//                        }
+//                    }
+
+                        Opinion opinion = kaf.newOpinion();
+                        Span<Term> termSpan = KAFDocument.newTermSpan();
+                        termSpan.addTargets(kaf.getSentenceTerms(sentence.get(CoreAnnotations.SentenceIndexAnnotation.class)));
+
+                        opinion.createOpinionExpression(termSpan);
+                        opinion.getOpinionExpression().setPolarity(sentimentClass);
+                        opinion.getOpinionExpression().setStrength(sentimentValue);
+
+//                        Span<Term> holderSpan = KAFDocument.newTermSpan();
+//                        opinion.getOpinionHolder().setSpan(holderSpan);
+//                        Span<Term> targetSpan = KAFDocument.newTermSpan();
+//                        opinion.getOpinionTarget().setSpan(targetSpan);
+                    }
+                }
+        }
+        return kaf;
+    }
+
+
+    private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf) {
         if (doc.get(CorefCoreAnnotations.CorefChainAnnotation.class) != null) {
 
             Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
             for (CorefChain chain : corefChains.values()) {
                 List<Span<Term>> corefList = new ArrayList<>();
                 chain.getMentionsInTextualOrder().forEach(mention -> {
-                   Span<Term> termSpan = KAFDocument.newTermSpan();
-                   for(int termIndex = mention.startIndex-1; termIndex <mention.endIndex-1; termIndex++)
-                       termSpan.addTarget(kaf.getSentenceTerms(mention.sentNum-1).get(termIndex));
-                   corefList.add(termSpan);
+                    Span<Term> termSpan = KAFDocument.newTermSpan();
+                    for(int termIndex = mention.startIndex-1; termIndex <mention.endIndex-1; termIndex++)
+                        termSpan.addTarget(kaf.getSentenceTerms(mention.sentNum-1).get(termIndex));
+                    corefList.add(termSpan);
                 });
                 kaf.newCoref(corefList);
             }
@@ -208,7 +260,7 @@ public final class CoreNLPtoKAF {
         return kaf;
     }
 
-    
+
     private static String getModelName(String lp){
         return "langstok-corenlp-"+lp;
     }
