@@ -6,12 +6,16 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import ixa.kaflib.KAFDocument;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.logging.Logger;
 
-
+/**
+ * Priority is given to CoreNLPtoKAF
+ */
+@Ignore
 public class GetCoreNLPAnnotationFromKAFTests {
 
     private static final Logger logger = Logger.getLogger(GetCoreNLPAnnotationFromKAFTests.class.getName());
