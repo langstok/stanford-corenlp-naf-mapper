@@ -1,4 +1,4 @@
-package com.langstok.nlp.corenlptonaf;
+package com.langstok.nlp.corenlpnafmapper;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

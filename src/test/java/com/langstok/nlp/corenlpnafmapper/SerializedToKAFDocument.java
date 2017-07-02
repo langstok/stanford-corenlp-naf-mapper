@@ -1,6 +1,6 @@
-package com.langstok.nlp.corenlptonaf;
+package com.langstok.nlp.corenlpnafmapper;
 
-import com.langstok.nlp.corenlptonaf.map.CoreNLPtoKAF;
+import com.langstok.nlp.corenlpnafmapper.map.CoreNLPtoKAF;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.GenericAnnotationSerializer;
 import edu.stanford.nlp.util.Pair;
@@ -12,10 +12,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Created by sander.puts on 6/29/2017.

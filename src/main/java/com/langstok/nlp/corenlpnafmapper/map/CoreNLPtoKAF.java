@@ -1,6 +1,6 @@
-package com.langstok.nlp.corenlptonaf.map;
+package com.langstok.nlp.corenlpnafmapper.map;
 
-import com.langstok.nlp.corenlptonaf.constant.KAFConstants;
+import com.langstok.nlp.corenlpnafmapper.constant.KAFConstants;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.langstok.nlp.corenlptonaf.constant.NLPConstants.PARAGRAPH;
+import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.langstok.nlp.corenlptonaf.constant;
+package com.langstok.nlp.corenlpnafmapper.constant;
 
 /**
  * Created by sander.puts on 5/25/2017.

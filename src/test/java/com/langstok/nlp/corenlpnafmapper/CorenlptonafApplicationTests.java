@@ -1,4 +1,4 @@
-package com.langstok.nlp.corenlptonaf;
+package com.langstok.nlp.corenlpnafmapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

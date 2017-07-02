@@ -1,4 +1,4 @@
-package com.langstok.nlp.corenlptonaf.map;
+package com.langstok.nlp.corenlpnafmapper.map;
 
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
