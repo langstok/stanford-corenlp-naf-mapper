@@ -8,11 +8,9 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
-import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.IntPair;
 import ixa.kaflib.*;
-import ixa.kaflib.Span;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -161,11 +159,15 @@ public final class CoreNLPtoKAF {
 
     private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf) {
 
-        if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
+        List<CoreMap> sentences = doc.get(CoreAnnotations.SentencesAnnotation.class);
+        if (sentences != null) {
 
-            doc.get(CoreAnnotations.SentencesAnnotation.class).forEach(sentence -> {
-                if (sentence.get(CoreAnnotations.MentionsAnnotation.class) != null) {
-                    sentence.get(CoreAnnotations.MentionsAnnotation.class).stream().forEach((CoreMap mention) -> {
+            for(CoreMap sentence : sentences){
+
+                List<CoreMap> mentions = sentence.get(CoreAnnotations.MentionsAnnotation.class);
+                if (mentions != null) {
+
+                    for(CoreMap mention : mentions){
 
                         String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
                         int begin = mention.get(CoreAnnotations.TokenBeginAnnotation.class);
@@ -182,9 +184,9 @@ public final class CoreNLPtoKAF {
                         references.add(neSpan);
                         Entity neEntity = kaf.newEntity(references);
                         neEntity.setType(namedEntityTag);
-                    });
+                    }
                 }
-            });
+            }
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
                 KAFConstants.LAYER_ENITITIES, getModelName(KAFConstants.LP_NER));
