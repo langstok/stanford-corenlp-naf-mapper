@@ -13,4 +13,4 @@ Note:
 - entitymentions are required for ner mapping implementation
 
    
-Inspired by the work of [@ragerri](@https://github.com/ragerri)
+Inspired by the work of [@ragerri](https://github.com/ragerri)
