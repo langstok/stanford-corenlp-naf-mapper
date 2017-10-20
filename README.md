@@ -10,7 +10,7 @@ Annotate using Stanford CoreNLP with the following annotators to map to naf.
 
 Note:
 - parse is required for dcoref, but not mapped to naf.
-- entitymentions are required used for ner mapping
+- entitymentions are required for ner mapping implementation
 
    
 Inspired by the work of [@ragerri](@https://github.com/ragerri)
