@@ -50,6 +50,7 @@ public final class KAFtoCoreNLP {
 
     public static Annotation getAnnotation(KAFDocument kafDocument){
         Annotation document = new Annotation(kafDocument.getRawText());
+        document.set(CoreAnnotations.DocDateAnnotation.class, kafDocument.getFileDesc().creationtime);
 
         //StringBuilder builder = new StringBuilder();
 
