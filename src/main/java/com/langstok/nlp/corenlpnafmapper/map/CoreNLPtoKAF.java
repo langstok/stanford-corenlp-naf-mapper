@@ -28,22 +28,19 @@ public final class CoreNLPtoKAF {
 
 
     public static KAFDocument mapAnnotations(Annotation doc, KAFDocument kafDocument, String annotators, String start, String stop) {
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.TOK));
+        List<String> annotatorsList = Arrays.asList(annotators.replaceAll(" ","").toLowerCase().split(","));
+
+        if(annotatorsList.contains(CoreNLPAnnotator.TOK))
             mapTOKToKAF(doc, kafDocument, start, stop);
-
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.POS));
+        if(annotatorsList.contains(CoreNLPAnnotator.POS))
             mapPOSToKAF(doc, kafDocument, start, stop);
-
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.ENTITYMENTIONS));
+        if(annotatorsList.contains(CoreNLPAnnotator.ENTITYMENTIONS));
             mapNerToKAF(doc, kafDocument, start, stop);
-
-
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.DCOREF)){
+        if(annotatorsList.contains(CoreNLPAnnotator.DCOREF))
             mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.DCOREF);
-        }
-        else if(annotators.toLowerCase().contains(CoreNLPAnnotator.COREF)) {
+        if(annotatorsList.contains(CoreNLPAnnotator.COREF))
             mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF);
-        }
+
         return kafDocument;
     }
 
@@ -228,4 +225,5 @@ public final class CoreNLPtoKAF {
     public static String createTimestamp() {
         return sdf.format(new Date());
     }
+
 }
