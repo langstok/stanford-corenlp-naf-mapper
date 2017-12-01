@@ -11,6 +11,7 @@ import edu.stanford.nlp.util.CoreMap;
 import ixa.kaflib.*;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -27,14 +28,14 @@ public final class CoreNLPtoKAF {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 
-    public static KAFDocument mapAnnotations(Annotation doc, KAFDocument kafDocument, String annotators, String start, String stop) {
+    public static KAFDocument mapAnnotations(Annotation doc, KAFDocument kafDocument, String annotators, Instant start, Instant stop) {
         List<String> annotatorsList = Arrays.asList(annotators.replaceAll(" ","").toLowerCase().split(","));
 
         if(annotatorsList.contains(CoreNLPAnnotator.TOK))
             mapTOKToKAF(doc, kafDocument, start, stop);
         if(annotatorsList.contains(CoreNLPAnnotator.POS))
             mapPOSToKAF(doc, kafDocument, start, stop);
-        if(annotatorsList.contains(CoreNLPAnnotator.ENTITYMENTIONS));
+        if(annotatorsList.contains(CoreNLPAnnotator.ENTITYMENTIONS))
             mapNerToKAF(doc, kafDocument, start, stop);
         if(annotatorsList.contains(CoreNLPAnnotator.DCOREF))
             mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.DCOREF);
@@ -47,7 +48,7 @@ public final class CoreNLPtoKAF {
 
 
 
-    public static KAFDocument mapTOKToKAF(Annotation doc, final KAFDocument kaf, String start, String stop){
+    public static KAFDocument mapTOKToKAF(Annotation doc, final KAFDocument kaf, Instant start, Instant stop){
 
         int noSents = 0;
         int noParas = 1;
@@ -77,13 +78,13 @@ public final class CoreNLPtoKAF {
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
                 KAFConstants.LAYER_TEXT, getModelName(CoreNLPAnnotator.TOK), getCoreNLPVersion());
-        newLp.setBeginTimestamp(start);
-        newLp.setEndTimestamp(stop);
+        newLp.setBeginTimestamp(createTimestamp(start));
+        newLp.setEndTimestamp(createTimestamp(stop));
         return kaf;
     }
 
 
-    public static KAFDocument mapPOSToKAF(Annotation doc, KAFDocument kaf, String start, String stop){
+    public static KAFDocument mapPOSToKAF(Annotation doc, KAFDocument kaf, Instant start, Instant stop){
 
         List<List<WF>> sentences = kaf.getSentences();
         if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
@@ -114,8 +115,8 @@ public final class CoreNLPtoKAF {
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
                 KAFConstants.LAYER_TERMS, getModelName(CoreNLPAnnotator.POS), getCoreNLPVersion());
-        newLp.setBeginTimestamp(start);
-        newLp.setEndTimestamp(stop);
+        newLp.setBeginTimestamp(createTimestamp(start));
+        newLp.setEndTimestamp(createTimestamp(stop));
         return kaf;
     }
 
@@ -153,7 +154,7 @@ public final class CoreNLPtoKAF {
         }
     }
 
-    private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf, String start, String stop) {
+    private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf, Instant start, Instant stop) {
 
         List<CoreMap> sentences = doc.get(CoreAnnotations.SentencesAnnotation.class);
         if (sentences != null) {
@@ -186,12 +187,12 @@ public final class CoreNLPtoKAF {
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
                 KAFConstants.LAYER_ENITITIES, getModelName(CoreNLPAnnotator.ENTITYMENTIONS), getCoreNLPVersion());
-        newLp.setBeginTimestamp(start);
-        newLp.setEndTimestamp(stop);
+        newLp.setBeginTimestamp(createTimestamp(start));
+        newLp.setEndTimestamp(createTimestamp(stop));
         return kaf;
     }
 
-    private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf, String start, String stop, String languageProcessor) {
+    private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf, Instant start, Instant stop, String languageProcessor) {
         if (doc.get(CorefCoreAnnotations.CorefChainAnnotation.class) != null) {
 
             Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
@@ -208,8 +209,8 @@ public final class CoreNLPtoKAF {
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
                 KAFConstants.LAYER_COREFENCES, getModelName(languageProcessor), getCoreNLPVersion());
-        newLp.setBeginTimestamp(start);
-        newLp.setEndTimestamp(stop);
+        newLp.setBeginTimestamp(createTimestamp(start));
+        newLp.setEndTimestamp(createTimestamp(stop));
         return kaf;
     }
 
@@ -222,8 +223,8 @@ public final class CoreNLPtoKAF {
         return CoreMap.class.getPackage().getImplementationVersion();
     }
 
-    public static String createTimestamp() {
-        return sdf.format(new Date());
+    public static String createTimestamp(Instant instant) {
+        return sdf.format(Date.from(instant));
     }
 
 }

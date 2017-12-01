@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 /**
@@ -33,10 +34,9 @@ public class MapAnnotationToKAFTests {
     @Test
     public void annotatedCorefToKaf() throws Exception {
         KAFDocument kafDocument = new KAFDocument("en","0.0");
-        String start = CoreNLPtoKAF.createTimestamp();
-        String stop = CoreNLPtoKAF.createTimestamp();
+        Instant instant = Instant.now();
 
-        result = CoreNLPtoKAF.mapAnnotations(doc, kafDocument, start, stop, "tokenize, pos");
+        result = CoreNLPtoKAF.mapAnnotations(doc, kafDocument, "tokenize, pos, entitymentions", instant, instant);
     }
 
     @Before
@@ -51,6 +51,6 @@ public class MapAnnotationToKAFTests {
 
     @After
     public void writeDocument() throws IOException {
-        Files.write(new File(MAVEN_TEST_RESOURCES_RESULT+"/output.xml").toPath(), result.toString().getBytes());
+        Files.write(new File(MAVEN_TEST_RESOURCES_RESULT+"/output.naf").toPath(), result.toString().getBytes());
     }
 }
