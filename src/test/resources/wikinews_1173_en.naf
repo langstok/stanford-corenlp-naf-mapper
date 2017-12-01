@@ -59,7 +59,7 @@ Emails exchanged among United States Air Force officials regarding a USD$23 bill
 
 Congressional lawmakers rejected the proposal in October, although industry experts say the deal had been killed by the Pentagon because of reports stating that the deal had favored Boeing. Senator McCain has been the deal's most vocal critic.
 
-The original negotiations with Boeing were over a no-bid contract. Such contracts are often justified by the speed they offer, eliminating a preliminary bid and selection round that may last months. However, no-bid contracts are only open to the company selected by the procuring agency. This leaves no-bid contracts open to accusations of conflicts of interest among the procurement personnel. Such accusations have previously been leveled against Vice President Dick Cheney for a no-bid contract to Halliburton, and are now being made against senior Air Force officials for choosing Boeing to replace its tanker fleet.
+The original negotiations with Boeing were over a no-bid contract. Such contracts are often justified by the speed they offer, eliminating a preliminary bid and selection round that may last months. However, no-bid contracts are only open to the company selected by the procuring agency. This leaves no-bid contracts open to accusations of conflicts of interest among the procurement personnel. Such accusations have previously been leveled against Vice President Dick Cheney for a no-bid contract to Halliburton, and are now being made against senior Air Force officials for choosing Boeing to corefReplace its tanker fleet.
 
 In the released emails, Air Force officials responsible for the awarding of contracts appear biased against Boeing's main competitor, Airbus and its CEO Ralph Crosby.
 
@@ -287,7 +287,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
     <wf id="w206" length="8" offset="1252" para="5" sent="11">choosing</wf>
     <wf id="w207" length="6" offset="1261" para="5" sent="11">Boeing</wf>
     <wf id="w208" length="2" offset="1268" para="5" sent="11">to</wf>
-    <wf id="w209" length="7" offset="1271" para="5" sent="11">replace</wf>
+    <wf id="w209" length="7" offset="1271" para="5" sent="11">corefReplace</wf>
     <wf id="w210" length="3" offset="1279" para="5" sent="11">its</wf>
     <wf id="w211" length="6" offset="1283" para="5" sent="11">tanker</wf>
     <wf id="w212" length="5" offset="1290" para="5" sent="11">fleet</wf>
@@ -3920,9 +3920,9 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         <target id="w208"/>
       </span>
     </term>
-    <term id="t209" lemma="replace" morphofeat="VB" pos="V" type="open">
+    <term id="t209" lemma="corefReplace" morphofeat="VB" pos="V" type="open">
       <span>
-        <!--replace-->
+        <!--corefReplace-->
         <target id="w209"/>
       </span>
       <externalReferences>
@@ -12559,13 +12559,13 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
     <dep from="t206" rfunc="OBJ" to="t207"/>
     <!--OPRD(choosing,to)-->
     <dep from="t206" rfunc="OPRD" to="t208"/>
-    <!--IM(to,replace)-->
+    <!--IM(to,corefReplace)-->
     <dep from="t208" rfunc="IM" to="t209"/>
     <!--NMOD(fleet,its)-->
     <dep from="t212" rfunc="NMOD" to="t210"/>
     <!--NMOD(fleet,tanker)-->
     <dep from="t212" rfunc="NMOD" to="t211"/>
-    <!--OBJ(replace,fleet)-->
+    <!--OBJ(corefReplace,fleet)-->
     <dep from="t209" rfunc="OBJ" to="t212"/>
     <!--P(have,.)-->
     <dep from="t179" rfunc="P" to="t213"/>
@@ -17959,7 +17959,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         </span>
       </t>
       <t id="ter209">
-        <!--replace-->
+        <!--corefReplace-->
         <span>
           <target id="t209"/>
         </span>
@@ -27082,7 +27082,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         </span>
       </role>
       <role id="rl82" semRole="AM-PNC">
-        <!--for choosing Boeing to replace its tanker fleet-->
+        <!--for choosing Boeing to corefReplace its tanker fleet-->
         <span>
           <target head="yes" id="t205"/>
           <target id="t206"/>
@@ -27152,7 +27152,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         </span>
       </role>
       <role id="rl86" semRole="A1">
-        <!--to replace its tanker fleet-->
+        <!--to corefReplace its tanker fleet-->
         <externalReferences>
           <externalRef reference="get-13.5.1@Theme" resource="VerbNet"/>
           <externalRef reference="Choosing@Chosen" resource="FrameNet"/>
@@ -27168,13 +27168,13 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
       </role>
     </predicate>
     <predicate id="pr38">
-      <!--replace-->
+      <!--corefReplace-->
       <externalReferences>
-        <externalRef reference="replace.01" resource="PropBank"/>
+        <externalRef reference="corefReplace.01" resource="PropBank"/>
         <externalRef reference="exchange-13.6" resource="VerbNet"/>
         <externalRef reference="Replacing" resource="FrameNet+"/>
         <externalRef reference="Take_place_of" resource="FrameNet+"/>
-        <externalRef reference="replace.01" resource="PropBank"/>
+        <externalRef reference="corefReplace.01" resource="PropBank"/>
         <externalRef reference="Replacing" resource="ESO"/>
         <externalRef reference="contextual" resource="EventType"/>
         <externalRef reference="ili-30-02257767-v" resource="WordNet"/>
@@ -27189,7 +27189,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
           <externalRef reference="exchange-13.6@Co-Theme" resource="VerbNet"/>
           <externalRef reference="Replacing@New" resource="FrameNet-"/>
           <externalRef reference="Take_place_of@New" resource="FrameNet-"/>
-          <externalRef reference="replace.01@2" resource="PropBank"/>
+          <externalRef reference="corefReplace.01@2" resource="PropBank"/>
           <externalRef reference="Replacing@replacing-entity_2" resource="ESO"/>
         </externalReferences>
         <span>
@@ -27202,7 +27202,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
           <externalRef reference="exchange-13.6@Theme" resource="VerbNet"/>
           <externalRef reference="Replacing@Old" resource="FrameNet-"/>
           <externalRef reference="Take_place_of@Old" resource="FrameNet-"/>
-          <externalRef reference="replace.01@1" resource="PropBank"/>
+          <externalRef reference="corefReplace.01@1" resource="PropBank"/>
           <externalRef reference="Replacing@replacing-entity_1" resource="ESO"/>
         </externalReferences>
         <span>
@@ -30746,7 +30746,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         <externalRef reference="outcome.01" resource="NomBank"/>
         <externalRef reference="appear-48.1.1" resource="VerbNet"/>
         <externalRef reference="Causation" resource="FrameNet"/>
-        <externalRef reference="result.01" resource="PropBank"/>
+        <externalRef reference="results.01" resource="PropBank"/>
         <externalRef reference="contextual" resource="EventType"/>
         <externalRef reference="ili-30-02634265-v" resource="WordNet"/>
       </externalReferences>
@@ -30758,7 +30758,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         <externalReferences>
           <externalRef reference="appear-48.1.1@Location" resource="VerbNet"/>
           <externalRef reference="Causation@Effect" resource="FrameNet"/>
-          <externalRef reference="result.01@2" resource="PropBank"/>
+          <externalRef reference="results.01@2" resource="PropBank"/>
         </externalReferences>
         <span>
           <target id="t687"/>
@@ -30776,7 +30776,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         <externalReferences>
           <externalRef reference="appear-48.1.1@Theme" resource="VerbNet"/>
           <externalRef reference="Causation@Cause" resource="FrameNet"/>
-          <externalRef reference="result.01@1" resource="PropBank"/>
+          <externalRef reference="results.01@1" resource="PropBank"/>
         </externalReferences>
         <span>
           <target head="yes" id="t689"/>
@@ -32050,7 +32050,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
         <externalRef reference="exchange-13.6" resource="VerbNet"/>
         <externalRef reference="Replacing" resource="FrameNet+"/>
         <externalRef reference="Take_place_of" resource="FrameNet+"/>
-        <externalRef reference="replace.01" resource="PropBank"/>
+        <externalRef reference="corefReplace.01" resource="PropBank"/>
         <externalRef reference="Replacing" resource="ESO"/>
         <externalRef reference="contextual" resource="EventType"/>
         <externalRef reference="ili-30-02257767-v" resource="WordNet"/>
@@ -32065,7 +32065,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
           <externalRef reference="exchange-13.6@Theme" resource="VerbNet"/>
           <externalRef reference="Replacing@Old" resource="FrameNet-"/>
           <externalRef reference="Take_place_of@Old" resource="FrameNet-"/>
-          <externalRef reference="replace.01@1" resource="PropBank"/>
+          <externalRef reference="corefReplace.01@1" resource="PropBank"/>
           <externalRef reference="Replacing@replacing-entity_1" resource="ESO"/>
         </externalReferences>
         <span>
@@ -34039,7 +34039,7 @@ Days after Sen. McCain's remarks, the Air Force said the tanker replacement cont
     </factuality>
     <factuality id="f106">
       <span>
-        <!--replace-->
+        <!--corefReplace-->
         <target id="t209"/>
       </span>
       <factVal resource="nwr:attributionTense" value="UNDERSPECIFIED"/>

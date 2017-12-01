@@ -24,13 +24,19 @@ public class MapAnnotationToKAFTests {
 
     private final static Logger logger = Logger.getLogger(MapAnnotationToKAFTests.class.getName());
 
+    private static final File MAVEN_TEST_RESOURCES = new File("src/test/resources");
+    private static final File MAVEN_TEST_RESOURCES_RESULT = new File(MAVEN_TEST_RESOURCES+"/results");
+
     private KAFDocument result;
     private Annotation doc;
 
     @Test
     public void annotatedCorefToKaf() throws Exception {
         KAFDocument kafDocument = new KAFDocument("en","0.0");
-        result = CoreNLPtoKAF.mapAllAnnotations(doc, kafDocument);
+        String start = CoreNLPtoKAF.createTimestamp();
+        String stop = CoreNLPtoKAF.createTimestamp();
+
+        result = CoreNLPtoKAF.mapAnnotations(doc, kafDocument, start, stop, "tokenize, pos");
     }
 
     @Before
@@ -45,6 +51,6 @@ public class MapAnnotationToKAFTests {
 
     @After
     public void writeDocument() throws IOException {
-        Files.write(new File( "./output.naf").toPath(), result.toString().getBytes());
+        Files.write(new File(MAVEN_TEST_RESOURCES_RESULT+"/output.xml").toPath(), result.toString().getBytes());
     }
 }

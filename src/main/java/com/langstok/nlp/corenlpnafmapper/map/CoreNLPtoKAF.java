@@ -1,21 +1,17 @@
 package com.langstok.nlp.corenlpnafmapper.map;
 
+import com.langstok.nlp.corenlpnafmapper.constant.CoreNLPAnnotator;
 import com.langstok.nlp.corenlpnafmapper.constant.KAFConstants;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.IntPair;
 import ixa.kaflib.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static com.langstok.nlp.corenlpnafmapper.constant.NLPConstants.PARAGRAPH;
@@ -28,28 +24,30 @@ public final class CoreNLPtoKAF {
 
     private static final Logger logger = Logger.getLogger(CoreNLPtoKAF.class.getName());
 
-    /**
-     * sentiment?: tokenize,ssplit,pos,lemma,ner,parse,depparse,mention,dcoref,sentiment???
-     * coref: tokenize, ssplit, pos, lemma, ner, parse, dcoref
-     * tempcausal: POS dep timex_id	timex_type	timex_value	entity	pred_class	event_id	role1	role2	role3	is_arg_pred	has_semrole	chunk	main_verb	connectives	morpho	tense+aspect+pol	O
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
-     * @param doc
-     * @param kafDocument
-     * @return
-     */
-    public static KAFDocument mapAllAnnotations(Annotation doc, KAFDocument kafDocument) {
-        mapTOKToKAF(doc, kafDocument);
-        mapPOSToKAF(doc, kafDocument);
-        mapNerToKAF(doc, kafDocument);
-        //mapSentimentToKAF(doc, kafDocument); not compatible (sentence and token level tagging vs, expressions, targets, holders)
-        mapCorefToKAF(doc, kafDocument);
+
+    public static KAFDocument mapAnnotations(Annotation doc, KAFDocument kafDocument, String annotators, String start, String stop) {
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.TOK));
+            mapTOKToKAF(doc, kafDocument, start, stop);
+
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.POS));
+            mapPOSToKAF(doc, kafDocument, start, stop);
+
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.ENTITYMENTIONS));
+            mapNerToKAF(doc, kafDocument, start, stop);
+
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.COREF));
+            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF);
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.DCOREF));
+            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.DCOREF);
         return kafDocument;
     }
 
 
 
 
-    public static KAFDocument mapTOKToKAF(Annotation doc, final KAFDocument kaf){
+    public static KAFDocument mapTOKToKAF(Annotation doc, final KAFDocument kaf, String start, String stop){
 
         int noSents = 0;
         int noParas = 1;
@@ -78,15 +76,14 @@ public final class CoreNLPtoKAF {
             }
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-                KAFConstants.LAYER_TEXT, getModelName(KAFConstants.LP_TOK));
-        newLp.setBeginTimestamp();
-        newLp.setEndTimestamp();
-        newLp.setVersion(getCoreNLPVersion());
+                KAFConstants.LAYER_TEXT, getModelName(CoreNLPAnnotator.TOK), getCoreNLPVersion());
+        newLp.setBeginTimestamp(start);
+        newLp.setEndTimestamp(stop);
         return kaf;
     }
 
 
-    public static KAFDocument mapPOSToKAF(Annotation doc, KAFDocument kaf){
+    public static KAFDocument mapPOSToKAF(Annotation doc, KAFDocument kaf, String start, String stop){
 
         List<List<WF>> sentences = kaf.getSentences();
         if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
@@ -116,10 +113,9 @@ public final class CoreNLPtoKAF {
             }
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-                KAFConstants.LAYER_TERMS, getModelName(KAFConstants.LP_POS));
-        newLp.setBeginTimestamp();
-        newLp.setEndTimestamp();
-        newLp.setVersion(getCoreNLPVersion());
+                KAFConstants.LAYER_TERMS, getModelName(CoreNLPAnnotator.POS), getCoreNLPVersion());
+        newLp.setBeginTimestamp(start);
+        newLp.setEndTimestamp(stop);
         return kaf;
     }
 
@@ -157,7 +153,7 @@ public final class CoreNLPtoKAF {
         }
     }
 
-    private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf) {
+    private static KAFDocument mapNerToKAF(Annotation doc, KAFDocument kaf, String start, String stop) {
 
         List<CoreMap> sentences = doc.get(CoreAnnotations.SentencesAnnotation.class);
         if (sentences != null) {
@@ -180,7 +176,7 @@ public final class CoreNLPtoKAF {
 
                         List<Term> nameTerms = kaf.getTermsFromWFs(wfIds);
                         Span<Term> neSpan = KAFDocument.newTermSpan(nameTerms);
-                        List<Span<Term>> references = new ArrayList<Span<Term>>();
+                        List<Span<Term>> references = new ArrayList<>();
                         references.add(neSpan);
                         Entity neEntity = kaf.newEntity(references);
                         neEntity.setType(namedEntityTag);
@@ -189,57 +185,13 @@ public final class CoreNLPtoKAF {
             }
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-                KAFConstants.LAYER_ENITITIES, getModelName(KAFConstants.LP_NER));
-        newLp.setBeginTimestamp();
-        newLp.setEndTimestamp();
-        newLp.setVersion(getCoreNLPVersion());
+                KAFConstants.LAYER_ENITITIES, getModelName(CoreNLPAnnotator.ENTITYMENTIONS), getCoreNLPVersion());
+        newLp.setBeginTimestamp(start);
+        newLp.setEndTimestamp(stop);
         return kaf;
     }
 
-    private static KAFDocument mapSentimentToKAF(Annotation doc, KAFDocument kaf) {
-        if (doc.get(CoreAnnotations.SentencesAnnotation.class) != null) {
-
-            Iterator<CoreMap> itr = doc.get(CoreAnnotations.SentencesAnnotation.class).iterator();
-            while (itr.hasNext()) {
-                CoreMap sentence = itr.next();
-
-                edu.stanford.nlp.trees.Tree sentimentTree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
-                if (sentimentTree != null) {
-                    int sentiment = RNNCoreAnnotations.getPredictedClass(sentimentTree);
-
-                    String sentimentClass = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
-                    String sentimentValue = Integer.toString(sentiment);
-                    sentimentClass = sentimentClass.replaceAll(" ", "");
-
-                    IntPair span = sentimentTree.getSpan();
-
-//                    List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
-//                    for (CoreLabel token : tokens) {
-//                        if (token.containsKey(SentimentCoreAnnotations.SentimentClass.class)) {
-//                            String tokenSentiment = token.get(SentimentCoreAnnotations.SentimentClass.class);
-//                        }
-//                    }
-
-                        Opinion opinion = kaf.newOpinion();
-                        Span<Term> termSpan = KAFDocument.newTermSpan();
-                        termSpan.addTargets(kaf.getSentenceTerms(sentence.get(CoreAnnotations.SentenceIndexAnnotation.class)));
-
-                        opinion.createOpinionExpression(termSpan);
-                        opinion.getOpinionExpression().setPolarity(sentimentClass);
-                        opinion.getOpinionExpression().setStrength(sentimentValue);
-
-//                        Span<Term> holderSpan = KAFDocument.newTermSpan();
-//                        opinion.getOpinionHolder().setSpan(holderSpan);
-//                        Span<Term> targetSpan = KAFDocument.newTermSpan();
-//                        opinion.getOpinionTarget().setSpan(targetSpan);
-                    }
-                }
-        }
-        return kaf;
-    }
-
-
-    private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf) {
+    private static KAFDocument mapCorefToKAF(Annotation doc, KAFDocument kaf, String start, String stop, String languageProcessor) {
         if (doc.get(CorefCoreAnnotations.CorefChainAnnotation.class) != null) {
 
             Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
@@ -255,10 +207,9 @@ public final class CoreNLPtoKAF {
             }
         }
         KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-                KAFConstants.LAYER_COREFENCES, getModelName(KAFConstants.LP_DCOREF));
-        newLp.setBeginTimestamp();
-        newLp.setEndTimestamp();
-        newLp.setVersion(getCoreNLPVersion());
+                KAFConstants.LAYER_COREFENCES, getModelName(languageProcessor), getCoreNLPVersion());
+        newLp.setBeginTimestamp(start);
+        newLp.setEndTimestamp(stop);
         return kaf;
     }
 
@@ -269,5 +220,9 @@ public final class CoreNLPtoKAF {
 
     private static String getCoreNLPVersion(){
         return CoreMap.class.getPackage().getImplementationVersion();
+    }
+
+    public static String createTimestamp() {
+        return sdf.format(new Date());
     }
 }

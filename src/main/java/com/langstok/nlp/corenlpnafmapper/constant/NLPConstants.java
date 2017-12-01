@@ -15,7 +15,4 @@ public class NLPConstants {
 
     public static final String PARAGRAPH = "\u00B6\u00B6";
 
-
-
-
 }
