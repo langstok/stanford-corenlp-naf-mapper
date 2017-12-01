@@ -42,7 +42,7 @@ public final class CoreNLPtoKAF {
             mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.DCOREF);
         }
         else if(annotators.toLowerCase().contains(CoreNLPAnnotator.COREF)) {
-            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF)
+            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF);
         }
         return kafDocument;
     }
