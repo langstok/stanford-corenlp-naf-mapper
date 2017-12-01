@@ -37,10 +37,13 @@ public final class CoreNLPtoKAF {
         if(annotators.toLowerCase().contains(CoreNLPAnnotator.ENTITYMENTIONS));
             mapNerToKAF(doc, kafDocument, start, stop);
 
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.COREF));
-            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF);
-        if(annotators.toLowerCase().contains(CoreNLPAnnotator.DCOREF));
+
+        if(annotators.toLowerCase().contains(CoreNLPAnnotator.DCOREF)){
             mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.DCOREF);
+        }
+        else if(annotators.toLowerCase().contains(CoreNLPAnnotator.COREF)) {
+            mapCorefToKAF(doc, kafDocument, start, stop, CoreNLPAnnotator.COREF)
+        }
         return kafDocument;
     }
 
